@@ -68,17 +68,6 @@ const sessionOptions = {
     }
 };
 
-app.use((req, res, next) => {
-  res.locals.currUser = req.user;
-  next();
-});
-
- app.get("/", (req, res) => {
-    res.render("listings/index");
-});
-
-
-
 app.use(session(sessionOptions));
 app.use(flash());
 
@@ -94,6 +83,10 @@ res.locals.success=req.flash("success");
 res.locals.error=req.flash("error");
 res.locals.currUser = req.user;
 next();
+});
+
+ app.get("/", (req, res) => {
+    res.render("listings/index");
 });
 
 // app.get("/demouser",async(req,res)=>{
