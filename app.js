@@ -16,14 +16,10 @@ const flash=require("connect-flash");
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
-const Listing = require("./models/listing.js");
-
-
 
 const listingRouter=require("./routes/listing.js");
 const reviewRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
-
 
 const dbUrl = process.env.ATLASDB_URL;
 
@@ -54,8 +50,8 @@ const store=MongoStore.create({
     touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
-    console.log("ERRIR IN MONGO SESSION STORE",err)
+store.on("error",(err)=>{
+    console.log("ERROR IN MONGO SESSION STORE",err);
 });
 
 const sessionOptions = {
@@ -67,7 +63,7 @@ const sessionOptions = {
         expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge:7 * 24 * 60 * 60 * 1000,
         httpOnly:true,
-    }
+    },
 };
 
 app.use(session(sessionOptions));
@@ -87,36 +83,18 @@ res.locals.currUser = req.user;
 next();
 });
 
- app.get("/", async (req, res) => {
-    try {
-        const allListings = await Listing.find({});
-        res.render("listings/index", { allListings });
-    } catch (err) {
-        console.error("Error fetching listings:", err);
-        req.flash("error", "Failed to load listings.");
-        res.redirect("/error");
-    }
+ app.get("/",(req,res)=>{
+     res.send("Hi i am root");
 });
-
-
-// app.get("/demouser",async(req,res)=>{
-//     let fakeUser=new User({
-//         email:"student@gmail.com",
-//         username:"delta-student",
-//     });
-
-//     let registerUser=await User.register(fakeUser,"helloworld");
-//     res.send(registerUser);
-// });
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 
   //Page not found(Middleware)
-//    app.all("*", (req, res, next) => {
-//       next(new ExpressError(404, "Page not found"));
-//     });
+    app.all("*", (req, res, next) => {
+       next(new ExpressError(404, "Page not found"));
+     });
 
 //Error handling Middleware
 app.use((err,req,res,next)=>{
