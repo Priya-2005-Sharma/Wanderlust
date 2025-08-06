@@ -1,3 +1,6 @@
+console.log("🧪 Inside createListing");
+console.log("🧪 req.body:", req.body);
+console.log("🧪 req.file:", req.file);
 const Listing=require("../models/listing");
 
 
