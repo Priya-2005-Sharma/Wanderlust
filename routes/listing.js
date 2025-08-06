@@ -13,10 +13,14 @@ router.get("/", wrapAsync(listingController.index));
 router.post(
   "/",
   isLoggedIn,
-  upload.single("listing[image]"), 
+  upload.single("listing[image]"),
+  (req, res, next) => {
+    console.log("✅ req.body:", req.body);
+    console.log("✅ req.file:", req.file);
+    next();
+  },
   wrapAsync(listingController.createListing)
 );
-
 
 //New Route
 router.get("/new",isLoggedIn,listingController.renderNewForm);
