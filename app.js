@@ -83,9 +83,9 @@ res.locals.currUser = req.user;
 next();
 });
 
- app.get("/",(req,res)=>{
-     res.send("Hi i am root");
-});
+//  app.get("/",(req,res)=>{
+//      res.send("Hi i am root");
+// });
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
