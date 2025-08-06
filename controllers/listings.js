@@ -29,39 +29,15 @@ module.exports.showListing=async(req,res)=>{
 };
 
  module.exports.createListing=async(req,res,next)=>{
-      console.log("📦 req.body.listing:", req.body.listing);
-  console.log("🖼️ req.file:", req.file);
-  console.log("👤 req.user:", req.user);
-try {
-    let url = req.file?.path;
-    let filename = req.file?.filename;
-
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
-
-    if (url && filename) {
-      newListing.image = { url, filename };
-    }
-
-    await newListing.save();
-    console.log("✅ Listing Saved:", newListing);
-    
-    req.flash("success", "New Listing Created!");
-    res.redirect("/listings");
-  } catch (err) {
-    console.error("❌ Error creating listing:", err);
-    next(err);
-  }
-};
- //    let url=req.file.path;
- //    let filename = req.file.filename;
- //     const newListing=new Listing(req.body.listing);
- //     newListing.owner= req.user._id;
- //     newListing.image = {url, filename};
- //     await newListing.save();
- //     req.flash("success","New Listing Created!");
- //     res.redirect("/listings");
- // };
+    let url=req.file.path;
+    let filename = req.file.filename;
+     const newListing=new Listing(req.body.listing);
+     newListing.owner= req.user._id;
+     newListing.image = {url, filename};
+     await newListing.save();
+     req.flash("success","New Listing Created!");
+     res.redirect("/listings");
+ };
 
  module.exports.renderEditForm=async(req,res)=>{
      let { id }=req.params;
