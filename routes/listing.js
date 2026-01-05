@@ -13,12 +13,8 @@ router.get("/", wrapAsync(listingController.index));
 router.post(
   "/",
   isLoggedIn,
+    validateListing, 
   upload.single("listing[image]"),
-  (req, res, next) => {
-    console.log("✅ req.body:", req.body);
-    console.log("✅ req.file:", req.file);
-    next();
-  },
   wrapAsync(listingController.createListing)
 );
 
@@ -30,8 +26,8 @@ router
 .get(wrapAsync( listingController.showListing)
 )
 .put(isLoggedIn,isOwner,
+  validateListing,
     upload.single("listing[image]"),
-    validateListing,
     wrapAsync(listingController.updateListing))
 
 .delete(isLoggedIn,isOwner,wrapAsync(listingController.destroyListing));

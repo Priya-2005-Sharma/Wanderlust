@@ -25,11 +25,7 @@ const dbUrl = process.env.ATLASDB_URL;
 
 async function main() {
   try {
-    await mongoose.connect(dbUrl, {
-      tls: true,
-      tlsAllowInvalidCertificates: false,
-      serverSelectionTimeoutMS: 10000,
-    });
+    await mongoose.connect(dbUrl);
     console.log("Connected to MongoDB Atlas");
 
     const store = MongoStore.create({
