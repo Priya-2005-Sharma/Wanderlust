@@ -17,11 +17,9 @@ const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const User=require("./models/user.js");
 
-
 const listingRouter=require("./routes/listing.js");
 const reviewRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
-
 
 const dbUrl = process.env.ATLASDB_URL;
 
@@ -46,6 +44,7 @@ async function main(){
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 app.use(methodOverride("_method"));
 app.engine("ejs",ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
@@ -59,7 +58,7 @@ const store=MongoStore.create({
 });
 
 store.on("error",(err)=>{
-    console.log("ERRIR IN MONGO SESSION STORE",err)
+    console.log("ERROR IN MONGO SESSION STORE",err);
 });
 
 const sessionOptions = {
@@ -71,13 +70,8 @@ const sessionOptions = {
         expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge:7 * 24 * 60 * 60 * 1000,
         httpOnly:true,
-    }
+    },
 };
-
-// app.get("/",(req,res)=>{
-//     res.send("Hii! I am root");
-// });
-
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -96,14 +90,8 @@ res.locals.currUser = req.user;
 next();
 });
 
-// app.get("/demouser",async(req,res)=>{
-//     let fakeUser=new User({
-//         email:"student@gmail.com",
-//         username:"delta-student",
-//     });
-
-//     let registerUser=await User.register(fakeUser,"helloworld");
-//     res.send(registerUser);
+//  app.get("/",(req,res)=>{
+//      res.send("Hi i am root");
 // });
 app.get("/", (req, res) => {
     res.redirect("/listings");
@@ -115,9 +103,9 @@ app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 
   //Page not found(Middleware)
-//    app.all("*", (req, res, next) => {
-//       next(new ExpressError(404, "Page not found"));
-//     });
+    app.all("*", (req, res, next) => {
+       next(new ExpressError(404, "Page not found"));
+     });
 
 //Error handling Middleware
 app.use((err,req,res,next)=>{

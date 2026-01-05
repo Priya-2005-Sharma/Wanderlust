@@ -1,3 +1,4 @@
+
 const Listing=require("../models/listing");
 
 
@@ -28,21 +29,38 @@ module.exports.showListing=async(req,res)=>{
     res.render("listings/show.ejs",{ listing });
 };
 
- module.exports.createListing=async(req,res,next)=>{
-    let url, filename;
-if(req.file){
-    url = req.file.path;
-    filename = req.file.filename;
-}
+module.exports.createListing = async (req, res, next) => {
+    console.log("🧪 Inside createListing");
+    console.log("🧪 req.body:", req.body);
+    console.log("🧪 req.file:", req.file);
+    try {
+        const newListing = new Listing(req.body.listing);
 
-     const newListing=new Listing(req.body.listing);
-     newListing.owner= req.user._id;
-     newListing.image = {url, filename};
-     await newListing.save();
-     req.flash("success","New Listing Created!");
-     res.redirect(`/listings/${newListing._id}`);
+        if (req.user && req.user._id) {
+            newListing.owner = req.user._id;
+        } else {
+            console.log("⚠ No user found in request.");
+        }
 
- };
+        if (req.file) {
+            newListing.image = {
+                url: req.file.path,
+                filename: req.file.filename
+            };
+        } else {
+            console.log("⚠ No file found in request.");
+        }
+
+        await newListing.save();
+        console.log(" Listing saved:", newListing);
+        req.flash("success", "New Listing Created!");
+        res.redirect("/listings");
+
+    } catch (err) {
+        console.error(" Error creating listing:", err);
+        res.status(500).send("Error while creating listing.");
+    }
+};
 
  module.exports.renderEditForm=async(req,res)=>{
      let { id }=req.params;
