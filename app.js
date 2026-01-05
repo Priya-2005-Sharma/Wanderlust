@@ -32,12 +32,16 @@ main()
 });
 
 async function main(){
-    await mongoose.connect(dbUrl,{
-        useNewUrlParser: true,
-    tls: true,
-    tlsAllowInvalidCertificates: false, 
-    serverSelectionTimeoutMS: 10000 
-    });
+     try {
+        await mongoose.connect(dbUrl, {
+            tls: true,
+            tlsAllowInvalidCertificates: false,
+            serverSelectionTimeoutMS: 10000
+        });
+        console.log(" Connected to MongoDB Atlas");
+    } catch (err) {
+        console.error(" MongoDB connection error:", err);
+    }
 };
 
 app.set("view engine","ejs");

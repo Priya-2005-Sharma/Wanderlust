@@ -30,9 +30,9 @@ module.exports.showListing=async(req,res)=>{
 };
 
 module.exports.createListing = async (req, res, next) => {
-    console.log("🧪 Inside createListing");
-    console.log("🧪 req.body:", req.body);
-    console.log("🧪 req.file:", req.file);
+    console.log("Inside createListing");
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
     try {
         const newListing = new Listing(req.body.listing);
 
