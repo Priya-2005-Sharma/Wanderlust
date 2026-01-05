@@ -34,7 +34,6 @@ main()
 async function main(){
     await mongoose.connect(dbUrl,{
         useNewUrlParser: true,
-    useUnifiedTopology: true,
     tls: true,
     tlsAllowInvalidCertificates: false, 
     serverSelectionTimeoutMS: 10000 
