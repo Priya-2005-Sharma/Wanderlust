@@ -34,7 +34,13 @@ main()
 });
 
 async function main(){
-    await mongoose.connect(dbUrl);
+    await mongoose.connect(dbUrl,{
+        useNewUrlParser: true,
+    useUnifiedTopology: true,
+    tls: true,
+    tlsAllowInvalidCertificates: false, 
+    serverSelectionTimeoutMS: 10000 
+    });
 };
 
 app.set("view engine","ejs");
@@ -52,7 +58,7 @@ const store=MongoStore.create({
     touchAfter: 24 * 3600,
 });
 
-store.on("error",()=>{
+store.on("error",(err)=>{
     console.log("ERRIR IN MONGO SESSION STORE",err)
 });
 
@@ -60,7 +66,7 @@ const sessionOptions = {
     store,
     secret: process.env.SECRET,
     resave:false,
-    saveUninitialized:true,
+    saveUninitialized:false,
     cookie:{
         expires:Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge:7 * 24 * 60 * 60 * 1000,
@@ -99,6 +105,10 @@ next();
 //     let registerUser=await User.register(fakeUser,"helloworld");
 //     res.send(registerUser);
 // });
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
+
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
